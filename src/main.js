@@ -50,17 +50,10 @@ function calculateBonusByProfit(index, total, seller) {
 
   const cashBonus = (profit * bonusPercentage) / 100;
   
-  // Форматируем с удалением лишних нулей
-  const rounded = Math.round(cashBonus * 100 + Number.EPSILON) / 100;
-  return parseFloat(rounded.toFixed(2));
+  // Форматируем с двумя знаками после запятой
+  return +(Math.round(cashBonus * 100 + Number.EPSILON) / 100).toFixed(2);
 }
 
-/**
- * Функция для анализа данных продаж
- * @param data
- * @param options
- * @returns {{revenue, top_products, bonus, name, sales_count, profit, seller_id}[]}
- */
 /**
  * Функция для анализа данных продаж
  * @param data
@@ -87,10 +80,9 @@ function analyzeSalesData(data, options) {
     throw new Error("Не переданы необходимые функции для расчетов");
   }
 
-  // Функция для форматирования числа с удалением лишних нулей
+  // Функция для форматирования числа с двумя знаками после запятой
   const formatCurrency = (value) => {
-    const rounded = Math.round(value * 100 + Number.EPSILON) / 100;
-    return parseFloat(rounded.toFixed(2));
+    return +(Math.round(value * 100 + Number.EPSILON) / 100).toFixed(2);
   };
 
   // Подготовка промежуточных данных для сбора статистики
