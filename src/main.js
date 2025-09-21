@@ -140,7 +140,7 @@ function analyzeSalesData(data, options) {
   // Округляем итоговые значения после всех расчетов
   sellerStats.forEach(seller => {
     seller.revenue = Math.round(seller.revenue * 100) / 100;
-    seller.profit = Math.round(seller.profit * 100) / 100;
+    seller.profit = Math.round(seller.profit * 100 + Number.EPSILON) / 100;
   });
 
   // Сортировка продавцов по прибыли (по убыванию)
