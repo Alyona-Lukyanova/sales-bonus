@@ -50,8 +50,9 @@ function calculateBonusByProfit(index, total, seller) {
 
   const cashBonus = (profit * bonusPercentage) / 100;
   
-  // Округляем до 2 знаков, но используем более точное округление
-  return Math.round(cashBonus * 100 + Number.EPSILON) / 100;
+  // Форматируем с удалением лишних нулей
+  const rounded = Math.round(cashBonus * 100 + Number.EPSILON) / 100;
+  return parseFloat(rounded.toFixed(2));
 }
 
 /**
@@ -85,6 +86,12 @@ function analyzeSalesData(data, options) {
   if (typeof calculateRevenue !== "function" || typeof calculateBonus !== "function") {
     throw new Error("Не переданы необходимые функции для расчетов");
   }
+
+  // Функция для форматирования числа с удалением лишних нулей
+  const formatCurrency = (value) => {
+    const rounded = Math.round(value * 100 + Number.EPSILON) / 100;
+    return parseFloat(rounded.toFixed(2));
+  };
 
   // Подготовка промежуточных данных для сбора статистики
   const sellerStats = data.sellers.map((seller) => ({
@@ -139,8 +146,8 @@ function analyzeSalesData(data, options) {
 
   // Округляем итоговые значения после всех расчетов
   sellerStats.forEach(seller => {
-    seller.revenue = Math.round(seller.revenue * 100) / 100;
-    seller.profit = Math.round(seller.profit * 100 + Number.EPSILON) / 100;
+    seller.revenue = formatCurrency(seller.revenue);
+    seller.profit = formatCurrency(seller.profit);
   });
 
   // Сортировка продавцов по прибыли (по убыванию)
