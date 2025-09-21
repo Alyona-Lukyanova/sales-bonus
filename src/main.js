@@ -74,6 +74,7 @@ function analyzeSalesData(data, options) {
     !data || typeof data !== 'object' ||
     !Array.isArray(data.sellers) ||
     data.sellers.length === 0 ||
+    data.purchase_records.length === 0 ||
     !Array.isArray(data.products) ||
     !Array.isArray(data.purchase_records)
   ) {
