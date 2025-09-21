@@ -65,21 +65,16 @@ function analyzeSalesData(data, options) {
 
   // Проверка входных данных
   if (
-    !data ||
+    !data || typeof data !== 'object' ||
     !Array.isArray(data.sellers) ||
     data.sellers.length === 0 ||
     !Array.isArray(data.products) ||
-    !Array.isArray(data.purchase_records)
-  ) {
-    throw new Error("Некорректные входные данные");
-  }
-
-  // Проверка наличия опций
-  if (
-    typeof calculateRevenue !== "function" ||
+    !Array.isArray(data.purchase_records) ||
+    data.purchase_records.length === 0 ||
+    typeof calculateRevenue !== "function" || 
     typeof calculateBonus !== "function"
   ) {
-    throw new Error("Не переданы необходимые функции для расчетов");
+    throw new Error("Некорректные входные данные");
   }
 
   // Подготовка промежуточных данных для сбора статистики
