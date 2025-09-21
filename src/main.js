@@ -50,8 +50,8 @@ function calculateBonusByProfit(index, total, seller) {
 
   const cashBonus = (profit * bonusPercentage) / 100;
   
-  // Форматируем с двумя знаками после запятой
-  return +(Math.round(cashBonus * 100 + Number.EPSILON) / 100).toFixed(2);
+  // Простое округление до 2 знаков
+  return Math.round(cashBonus * 100) / 100;
 }
 
 /**
@@ -80,9 +80,9 @@ function analyzeSalesData(data, options) {
     throw new Error("Не переданы необходимые функции для расчетов");
   }
 
-  // Функция для форматирования числа с двумя знаками после запятой
+  // Функция для точного округления до 2 знаков
   const formatCurrency = (value) => {
-    return +(Math.round(value * 100 + Number.EPSILON) / 100).toFixed(2);
+    return Math.round(value * 100) / 100;
   };
 
   // Подготовка промежуточных данных для сбора статистики
