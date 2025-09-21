@@ -127,9 +127,8 @@ function analyzeSalesData(data, options) {
       const itemCost = product.purchase_price * item.quantity;
       const itemProfit = itemRevenue - itemCost;
 
-        seller.revenue = Math.round(seller.revenue * 100) / 100;
-        seller.profit = Math.round((seller.profit + itemProfit) * 100) / 100;
-        // seller.profit += itemProfit;
+      // Накопление без округления для точности
+      seller.profit += itemProfit;
 
       if (!seller.products_sold[item.sku]) {
         seller.products_sold[item.sku] = 0;
