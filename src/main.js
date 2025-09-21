@@ -49,10 +49,17 @@ function calculateBonusByProfit(index, total, seller) {
   }
 
   const cashBonus = (profit * bonusPercentage) / 100;
-
-  return Math.round(cashBonus * 100) / 100;
+  
+  // Округляем до 2 знаков, но используем более точное округление
+  return Math.round(cashBonus * 100 + Number.EPSILON) / 100;
 }
 
+/**
+ * Функция для анализа данных продаж
+ * @param data
+ * @param options
+ * @returns {{revenue, top_products, bonus, name, sales_count, profit, seller_id}[]}
+ */
 /**
  * Функция для анализа данных продаж
  * @param data
@@ -88,19 +95,6 @@ function analyzeSalesData(data, options) {
     products_sold: {},
   }));
 
-  // Если нет записей о покупках, возвращаем пустую статистику
-  if (data.purchase_records.length === 0) {
-    return sellerStats.map(seller => ({
-      seller_id: seller.id,
-      name: seller.name,
-      revenue: 0,
-      profit: 0,
-      sales_count: 0,
-      top_products: [],
-      bonus: 0
-    }));
-  }
-
   // Индексация продавцов и товаров для быстрого доступа
   const sellerIndex = Object.fromEntries(
     sellerStats.map((item) => [item.id, item])
@@ -119,7 +113,7 @@ function analyzeSalesData(data, options) {
     }
 
     seller.sales_count += 1;
-    seller.revenue = Math.round((seller.revenue + record.total_amount) * 100) / 100;
+    seller.revenue += record.total_amount;
 
     record.items.forEach((item) => {
       const product = productIndex[item.sku];
@@ -130,15 +124,21 @@ function analyzeSalesData(data, options) {
 
       const itemRevenue = calculateRevenue(item, product);
       const itemCost = product.purchase_price * item.quantity;
-      const itemProfit = Math.round((itemRevenue - itemCost) * 100) / 100;
+      const itemProfit = itemRevenue - itemCost;
 
-      seller.profit = Math.round((seller.profit + itemProfit) * 100) / 100;
+      seller.profit += itemProfit;
 
       if (!seller.products_sold[item.sku]) {
         seller.products_sold[item.sku] = 0;
       }
       seller.products_sold[item.sku] += item.quantity;
     });
+  });
+
+  // Округляем итоговые значения после всех расчетов
+  sellerStats.forEach(seller => {
+    seller.revenue = Math.round(seller.revenue * 100) / 100;
+    seller.profit = Math.round(seller.profit * 100) / 100;
   });
 
   // Сортировка продавцов по прибыли (по убыванию)
