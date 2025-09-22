@@ -80,11 +80,6 @@ function analyzeSalesData(data, options) {
     throw new Error("Не переданы необходимые функции для расчетов");
   }
 
-  // Функция для точного округления до 2 знаков
-  const formatCurrency = (value) => {
-    return Math.round(value * 100) / 100;
-  };
-
   // Подготовка промежуточных данных для сбора статистики
   const sellerStats = data.sellers.map((seller) => ({
     id: seller.id,
@@ -113,6 +108,8 @@ function analyzeSalesData(data, options) {
     }
 
     seller.sales_count += 1;
+    
+  
     seller.revenue += record.total_amount;
 
     record.items.forEach((item) => {
@@ -126,7 +123,7 @@ function analyzeSalesData(data, options) {
       const itemCost = product.purchase_price * item.quantity;
       const itemProfit = itemRevenue - itemCost;
 
-      // Накопление без округления для точности
+      // Накопление прибыли
       seller.profit += itemProfit;
 
       if (!seller.products_sold[item.sku]) {
@@ -138,8 +135,8 @@ function analyzeSalesData(data, options) {
 
   // Округляем итоговые значения после всех расчетов
   sellerStats.forEach(seller => {
-    seller.revenue = formatCurrency(seller.revenue);
-    seller.profit = formatCurrency(seller.profit);
+    seller.revenue = +(seller.revenue.toFixed(2));
+    seller.profit = Math.round(seller.profit * 100) / 100;
   });
 
   // Сортировка продавцов по прибыли (по убыванию)
