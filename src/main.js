@@ -17,7 +17,7 @@ function calculateSimpleRevenue(purchase, _product) {
   const revenue = fullPrice * (1 - decimalDiscount);
 
   // Округляем до 2 знаков после запятой (копейки)
-  return Math.round(revenue * 100) / 100;
+  return revenue;
 }
 
 /**
@@ -108,8 +108,6 @@ function analyzeSalesData(data, options) {
     }
 
     seller.sales_count += 1;
-    
-  
     seller.revenue += record.total_amount;
 
     record.items.forEach((item) => {
@@ -134,10 +132,10 @@ function analyzeSalesData(data, options) {
   });
 
   // Округляем итоговые значения после всех расчетов
-  sellerStats.forEach(seller => {
-    seller.revenue = +(seller.revenue.toFixed(2));
-    seller.profit = Math.round(seller.profit * 100) / 100;
-  });
+  // sellerStats.forEach(seller => {
+  //   seller.revenue = +(seller.revenue.toFixed(2));
+  //   seller.profit = Math.round(seller.profit * 100) / 100;
+  // });
 
   // Сортировка продавцов по прибыли (по убыванию)
   sellerStats.sort((a, b) => b.profit - a.profit);
@@ -160,12 +158,12 @@ function analyzeSalesData(data, options) {
 
   // Подготовка итоговой коллекции с нужными полями
   return sellerStats.map((seller) => ({
-    seller_id: seller.id,
+     seller_id: seller.id,
     name: seller.name,
-    revenue: seller.revenue,
-    profit: seller.profit,
+    revenue: +(seller.revenue.toFixed(2)),
+    profit: +(seller.profit.toFixed(2)),
     sales_count: seller.sales_count,
     top_products: seller.top_products,
-    bonus: seller.bonus,
+    bonus: +(seller.bonus.toFixed(2)),
   }));
 }
